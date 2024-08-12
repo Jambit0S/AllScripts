@@ -26,4 +26,9 @@ interface IControllable {
     /// Перестать взаимодействовать с объектом.
     /// </summary>
     public void InteractStop();
+
+    /// <summary>
+    /// Кинуть\ударить.
+    /// </summary>
+    public void Throw();
 }

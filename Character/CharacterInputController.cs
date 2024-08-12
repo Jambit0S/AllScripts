@@ -18,6 +18,8 @@ public class CharacterInputController : MonoBehaviour
             OnInteract(func);
         _gameInput.GameplayInput.Interact.canceled += func =>
             OnInteractStop(func);
+        _gameInput.Mouse.Throw.performed += func =>
+            OnThrow(func);
 
         _gameInput.Enable();
     }
@@ -35,6 +37,10 @@ public class CharacterInputController : MonoBehaviour
     /// <inheritdoc cref="IControllable.InteractStop"/>
     void OnInteractStop(InputAction.CallbackContext context) =>
         _controllable.InteractStop();
+
+    /// <inheritdoc cref="IControllable.Throw"/>
+    void OnThrow(InputAction.CallbackContext context) =>
+        _controllable.Throw();
 
     /// <summary>
     /// Ввести вектор движения персонажа.

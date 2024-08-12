@@ -25,7 +25,6 @@ public class Grabable : MonoBehaviour, IHoldable
     /// <inheritdoc/>
     public void Grab(GameObject holdPoint)
     {
-        Debug.Log("Grab");
         _body.useGravity = false;
         _body.freezeRotation = true;
         _holdPosition = holdPoint.transform;
@@ -37,7 +36,6 @@ public class Grabable : MonoBehaviour, IHoldable
     /// <inheritdoc/>
     public void Drop()
     {
-        Debug.Log("Drop");
         _body.useGravity = true;
         _body.freezeRotation = false;
         _holdPosition = null;
@@ -53,7 +51,7 @@ public class Grabable : MonoBehaviour, IHoldable
     {
         if (_holdPosition is not null)
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, _holdPosition.transform.position, ObjectSpeed * Time.deltaTime);
+            _body.MovePosition(Vector3.MoveTowards(this.transform.position, _holdPosition.transform.position, ObjectSpeed));
         }
     }
 

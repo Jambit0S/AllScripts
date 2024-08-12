@@ -9,9 +9,12 @@ public class Character : MonoBehaviour, IControllable
 {
     [SerializeField] CharacterController CharacterController;
     [SerializeField] Camera Camera;
-    [SerializeField] float MoveSpeed = 10f;
+    [SerializeField] float MaxMoveSpeed = 10f;
+    private float _currentMoveSpeed;
+    [SerializeField] float NormalWeight = 10f;
     [SerializeField] float CameraSensative = 10f;
     [SerializeField] float InteractibleLenght = 3f;
+    [SerializeField] float PowerToThrow = 10f;
     private float _xRotation = 0f;
     private GameObject _currentTarget;
     private GameObject _holdPoint;
@@ -27,6 +30,7 @@ public class Character : MonoBehaviour, IControllable
         Camera ??= GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
         _isInteract = false;
+        _currentMoveSpeed = MaxMoveSpeed;
     }
 
     /// <summary>
@@ -64,7 +68,7 @@ public class Character : MonoBehaviour, IControllable
 
         var resMove = (moveDirectionX + moveDirectiony).normalized;
 
-        CharacterController.Move(resMove * Time.deltaTime * MoveSpeed);
+        CharacterController.Move(resMove * Time.deltaTime * _currentMoveSpeed);
     }
 
     /// <inheritdoc/>
@@ -87,6 +91,7 @@ public class Character : MonoBehaviour, IControllable
         {
             try
             {
+                
                 interactObj.Interact();
             }
             catch { }
@@ -101,10 +106,7 @@ public class Character : MonoBehaviour, IControllable
                 _holdPoint = new GameObject("HolderPoint");
                 _holdPoint.transform.SetParent(Camera.transform);
                 _holdPoint.transform.position = Camera.transform.position + Camera.transform.forward * 1.5f; // Немного выдвигаем вперед
-
-                var player = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault();
-                
-                Physics.IgnoreCollision(this.GetComponent<Collider>(), player.GetComponent<Collider>());
+                _currentMoveSpeed = GetSpeedWithObject(_currentTarget.GetComponent<Rigidbody>().mass);
 
                 holdObj.Grab(_holdPoint);
             }
@@ -122,6 +124,7 @@ public class Character : MonoBehaviour, IControllable
             try
             {
                 _isInteract = false;
+                _currentMoveSpeed = MaxMoveSpeed;
                 Destroy(_holdPoint);
 
                 holdObj.Drop();
@@ -129,5 +132,29 @@ public class Character : MonoBehaviour, IControllable
             catch { }
 
         }
+    }
+
+    /// <inheritdoc/>
+    public void Throw()
+    {
+        if (_currentTarget is not null 
+            && _isInteract
+            &&_currentTarget.GetComponent<IHoldable>() is IHoldable throwObj)
+        {
+            InteractStop();
+            _currentTarget.GetComponent<Rigidbody>().AddForce(Camera.transform.forward * PowerToThrow);
+        }
+    }
+
+    /// <summary>
+    /// Получить скорость с объектом.
+    /// </summary>
+    /// <param name="mass">Масса объекта.</param>
+    public float GetSpeedWithObject(float mass) 
+    {
+        if (mass > NormalWeight)
+            return NormalWeight / mass * _currentMoveSpeed;
+            
+        return _currentMoveSpeed;
     }
 }
