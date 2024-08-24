@@ -3,8 +3,8 @@ using UnityEngine;
 /// <summary>
 /// Методы воздействия игрока на мир.
 /// </summary>
-interface IControllable {
-
+interface IControllable : IDurationInteractible, IThrowable
+{
     /// <summary>
     /// Движиение.
     /// </summary>
@@ -20,15 +20,15 @@ interface IControllable {
     /// <summary>
     /// Взаимодействовать с объектом.
     /// </summary>
-    public void Interact();
+    //public void Interact();
 
     /// <summary>
     /// Перестать взаимодействовать с объектом.
     /// </summary>
-    public void InteractStop();
+    //public void InteractStop();
 
     /// <summary>
     /// Кинуть\ударить.
     /// </summary>
-    public void Throw();
+    //public void Throw();
 }

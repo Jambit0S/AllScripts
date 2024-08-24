@@ -6,8 +6,11 @@ interface IInteractible {
     /// <summary>
     /// Взаимодействовать.
     /// </summary>
-    public void Interact();
+    public void Interact();  
+}
 
+interface IDurationInteractible : IInteractible
+{
     /// <summary>
     /// Перестать взаимодействовать.
     /// </summary>

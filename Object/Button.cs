@@ -10,6 +10,4 @@ public class Button : MonoBehaviour, IInteractible
     {
         ObjectToInvokeLogic.GetComponent<IInteractible>().Interact();
     }
-
-    public void InteractStop() {}
 }
